@@ -1,0 +1,9 @@
+[
+  {
+    "id": "rov1",
+    "url": "https://www.facebook.com/groups/REPLACE_ME",
+    "games": ["ROV"],
+    "mode": "feed",
+    "enabled": false
+  }
+]

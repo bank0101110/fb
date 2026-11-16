@@ -1,0 +1,22 @@
+{
+  "timezone_offset": "+07:00",
+  "max_post_age_days": 3,
+  "run_post_budget": 200,
+  "per_group_min_posts": 10,
+  "per_group_max_posts": 60,
+  "stop_after_consecutive_seen": 3,
+  "max_results_per_product": 15,
+  "min_fit": 60,
+  "include_no_price": true,
+  "underpriced_ratio": 0.5,
+  "view_images": "shortlist_only",
+  "max_images_per_post": 3,
+  "warn_words": ["โอนก่อน", "ไม่ผ่านกลาง", "ไม่ใช้คนกลาง", "ด่วนมาก", "เฉพาะวันนี้"],
+  "group_tiers": [
+    {"tier": "A", "min_hit_rate": 0.05, "interval_hours": 0},
+    {"tier": "B", "min_hit_rate": 0.01, "interval_hours": 48},
+    {"tier": "C", "min_hit_rate": 0.0,  "interval_hours": 72}
+  ],
+  "new_group_free_runs": 3,
+  "market_report_days": 7
+}

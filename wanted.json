@@ -1,0 +1,17 @@
+[
+  {
+    "id": "example-rov",
+    "enabled": false,
+    "game": "ROV",
+    "name": "ไอดี ROV แรงก์ Conqueror ฮีโร่ครบ",
+    "keywords": ["rov", "ขายไอดี", "id rov", "รหัส rov"],
+    "must": ["ฮีโร่ 100+", "แรงก์ Conqueror+"],
+    "nice": ["สกิน SS", "สกินลิมิเต็ด", "เพชรเหลือ"],
+    "exclude": ["ไอดีเช่า", "ผูกเบอร์ถอดไม่ได้", "โดนแบน"],
+    "transfer": ["เปลี่ยนอีเมลได้", "ผ่านคนกลางได้"],
+    "price": {"min": 500, "max": 2500, "market": 2000},
+    "max_post_age_days": 2,
+    "groups": "all",
+    "notes": ""
+  }
+]

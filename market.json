@@ -1,0 +1,11 @@
+{
+  "discover": true,
+  "track": [
+    {
+      "key": "rov:conqueror-id",
+      "game": "ROV",
+      "name": "ไอดี ROV แรงก์ Conqueror",
+      "aliases": ["conq", "คอนเคอเรอร์", "conqueror"]
+    }
+  ]
+}
