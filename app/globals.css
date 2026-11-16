@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0b1120;
+  --color-surface: #111827;
+  --color-sunken: #0f172a;
+  --color-elevated: #1f2937;
+  --color-line: #334155;
+  --color-ink: #f9fafb;
+  --color-soft: #cbd5e1;
+  --color-muted: #94a3b8;
+  --color-primary: #7c3aed;
+  --color-primary-light: #a78bfa;
+  --color-primary-pale: #c4b5fd;
+  --color-primary-deep: #1e1638;
+  --color-primary-edge: #4c3a8c;
+  --color-accent: #22d3ee;
+  --color-success: #10b981;
+  --color-success-text: #34d399;
+  --color-warn: #f59e0b;
+  --color-danger: #ef4444;
+  --color-danger-text: #f87171;
+  --font-sans: "Inter", "IBM Plex Sans Thai", system-ui, sans-serif;
+}
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
+
+input,
+textarea,
+select {
+  color-scheme: dark;
+}
+
+@utility field {
+  @apply min-h-11 w-full rounded-xl border border-line bg-sunken px-3.5 py-2.5 text-sm text-ink placeholder:text-slate-500 outline-none focus:border-primary-light focus:ring-2 focus:ring-primary/40;
+}
+
+@utility label {
+  @apply text-[13px] font-medium text-soft;
+}
+
+@utility btn {
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-semibold transition-colors disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply btn bg-primary text-white hover:bg-violet-500;
+}
+@utility btn-ghost {
+  @apply btn border border-line bg-transparent text-soft hover:bg-elevated;
+}
+@utility btn-danger {
+  @apply btn border border-red-900 bg-transparent text-danger-text hover:bg-red-950;
+}
+@utility card {
+  @apply rounded-2xl border border-elevated bg-surface;
+}

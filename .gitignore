@@ -1,0 +1,8 @@
+# dependencies & build output only — data/ is intentionally committed so it moves with the repo
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.env*.local
+__pycache__/

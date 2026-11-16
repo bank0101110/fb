@@ -6,7 +6,7 @@ Claude does the browsing and judging; this script does everything deterministic:
   ingest  -> merge a run's posts.jsonl into state/data, write new matches CSV
   report  -> market popularity summary from data/market_log.jsonl
 
-Stdlib only. Root = parent folder of scripts/ (override with --root).
+Stdlib only. Root = <project>/data (override with --root).
 """
 import argparse, csv, json, os, statistics, sys
 from datetime import datetime, timedelta, timezone
@@ -80,7 +80,7 @@ class Ctx:
         self.market = load_json(p("market.json"), {"discover": True, "track": []})
         self.gstate_path = p("state", "groups_state.json")
         self.seen_path = p("state", "seen_posts.json")
-        self.log_path = p("data", "market_log.jsonl")
+        self.log_path = p("log", "market_log.jsonl")
         self.gstate = load_json(self.gstate_path, {})
         self.seen = load_json(self.seen_path, {})
         self.p = p
@@ -228,10 +228,15 @@ def cmd_ingest(ctx, args):
                          " | ".join(m.get("has", [])), " | ".join(m.get("missing", [])),
                          " | ".join(m.get("nice_found", [])), " | ".join(flags),
                          m.get("note", "")])
+    header = ["product", "rank", "fit", "post_url", "group", "author", "author_url",
+              "price", "cheaper_than_market_pct", "posted_at", "has", "missing",
+              "nice_found", "flags", "note"]
     out = ctx.p("results", f"{run_id}_matches.csv")
-    write_csv(out, ["product", "rank", "fit", "post_url", "group", "author", "author_url",
-                    "price", "cheaper_than_market_pct", "posted_at", "has", "missing",
-                    "nice_found", "flags", "note"], rows)
+    write_csv(out, header, rows)
+    list_cols = {"has", "missing", "nice_found", "flags"}
+    save_json(ctx.p("results", f"{run_id}_matches.json"),
+              [{k: ([x for x in v.split(" | ") if x] if k in list_cols else v)
+                for k, v in zip(header, r)} for r in rows])
 
     # group state
     for g, pg in per_group.items():
@@ -327,7 +332,7 @@ def cmd_report(ctx, args):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--root", default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    ap.add_argument("--root", default=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data"))
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("plan"); p.add_argument("--all", action="store_true",
                                                help="ignore tier intervals")

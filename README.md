@@ -1,85 +1,63 @@
-# fb — หาสินค้า + เก็บข้อมูลตลาดจากกลุ่ม Facebook
+# IDScout — หาสินค้า + ติดตามความนิยมจากกลุ่ม Facebook
 
-Claude อ่านโพสต์และตัดสินว่าตรงไหม / `scripts/fbscan.py` ทำงานบัญชีข้อมูลที่เหลือทั้งหมด (stdlib only)
+เว็บ Next.js ที่รันบนเครื่องตัวเอง ไม่มีฐานข้อมูล ข้อมูลทั้งหมดเป็นไฟล์ใน `data/` (commit ขึ้น git ได้ ย้ายเครื่องแล้วข้อมูลตามไปด้วย)
 
-```
-fb/
-  config.json          ค่าตั้งรวม
-  groups.json          รายการกลุ่ม
-  wanted.json          สินค้าที่ต้องการหา (array)
-  market.json          รายการที่ติดตามความนิยม + เปิด/ปิด discover
-  images/<product_id>/ รูปอ้างอิงของสินค้า (ไม่บังคับ)
-  scripts/fbscan.py    plan | ingest | report
-  state/               สถานะ (สคริปต์เขียน ห้ามแก้มือถ้าไม่จำเป็น)
-    groups_state.json    ต่อกลุ่ม: runs, posts_read, matches, posts_per_day, recent_post_ids
-    seen_posts.json      ทุกโพสต์ที่เคยเห็น: reported (ส่งผลแล้วให้สินค้าไหน), sold_at
-  data/market_log.jsonl ทุกโพสต์ที่อ่าน (append-only) ใช้ทำรายงานความนิยม
-  runs/<run_id>/       posts.jsonl ที่ Claude สกัดในแต่ละรอบ (+ meta.json)
-  results/             <run_id>_matches.csv, market_<date>_<N>d.csv
+## เริ่มใช้
+
+```bash
+npm install
+npm run dev        # http://localhost:3000
+# หรือ production: npm run build && npm start
 ```
 
-## Input ที่คุณแก้
+ต้องการ Node 20+ · ใช้โฟลเดอร์ข้อมูลอื่นได้ด้วย `FB_DATA_DIR=/path/to/data npm run dev`
 
-### groups.json
-| field | ความหมาย |
-|---|---|
-| id | ชื่อสั้น ใช้อ้างใน wanted.groups |
-| url | ลิงก์กลุ่ม (บัญชีต้องเป็นสมาชิก) |
-| games | เกมหลักของกลุ่ม (ช่วย Claude จัด items) |
-| mode | `feed` (เลื่อนอ่านฟีดเรียงใหม่สุด) หรือ `search` (ใช้ค้นหาในกลุ่มด้วย keywords — ยังเป็นการทดลอง) |
-| enabled | false = ข้าม |
+## หน้าเว็บ
+| หน้า | ทำอะไร | ไฟล์ |
+|---|---|---|
+| ภาพรวมตลาด `/` | dashboard แยกตามเกม: ตามหา vs ขาย, ราคากลาง, อันดับสินค้า, รายละเอียดสินค้า | อ่าน `log/`, `state/`, `results/` |
+| ผลค้นหาสินค้า `/results` | โพสต์ที่ตรงกับสินค้าที่ต้องการ แยกตามรอบ | `results/*_matches.json` |
+| สินค้าที่ต้องการ `/wanted` | เพิ่ม/แก้สินค้า + อัปโหลดรูปอ้างอิง | `wanted.json`, `images/<id>/` |
+| กลุ่ม Facebook `/groups` | ลิงก์กลุ่ม + สถานะ tier | `groups.json` |
+| รายการติดตาม `/market` | ของที่ติดตามความนิยม + ของที่ Claude เจอเอง | `market.json` |
+| ตั้งค่า `/settings` | งบโพสต์, อายุโพสต์, tier ฯลฯ | `config.json` |
 
-### wanted.json (1 object = 1 สินค้า)
-| field | ความหมาย |
-|---|---|
-| id | ใช้เป็นชื่อโฟลเดอร์ images/ และคอลัมน์ product ในผล |
-| enabled | false = ไม่หา (ซื้อได้แล้วก็ปิด) |
-| game, name | |
-| keywords | คำที่ผู้ขายใช้ (ใช้ใน mode=search และช่วย Claude กรอง) |
-| must / nice / exclude | ต้องมี / มีแล้วดี (ใช้จัดอันดับ) / เจอแล้วตัดทิ้ง |
-| transfer | เงื่อนไขการโอนไอดี |
-| price.min / max / market | ช่วงราคา; market ใช้คำนวณ % ถูกกว่าตลาด + ธง "ถูกผิดปกติ" |
-| max_post_age_days | null = ใช้ config |
-| groups | `"all"` หรือ `["rov1","rov2"]` |
+## โครงสร้าง data/
+```
+data/
+  config.json  groups.json  wanted.json  market.json   ← แก้ผ่านเว็บ
+  images/<product_id>/                                  ← รูปอ้างอิง
+  state/groups_state.json  state/seen_posts.json        ← สคริปต์เขียน
+  log/market_log.jsonl                                  ← ทุกโพสต์ที่อ่าน (append-only)
+  runs/<run_id>/posts.jsonl                             ← ที่ Claude สกัดแต่ละรอบ
+  results/<run_id>_matches.{csv,json}  market_*.csv     ← ผลลัพธ์
+```
 
-### market.json
-- `discover: true` → Claude ตั้ง item key ใหม่เองเมื่อเจอของที่ไม่อยู่ใน track
-- `track[]` → `{key, game, name, aliases}` key รูปแบบ `game:slug` เช่น `rov:conqueror-id`
-
-### config.json (ค่าที่น่าปรับ)
-- `max_post_age_days`, `run_post_budget` (โพสต์รวมต่อรอบ), `per_group_min/max_posts`
-- `min_fit` (0-100) ต่ำกว่านี้ไม่ส่งผล, `max_results_per_product`
-- `group_tiers` hit_rate = (matches+1)/(posts_read+20); A ทุกรอบ, B ทุก 48 ชม., C ทุก 72 ชม.; กลุ่มใหม่ได้ A ฟรี `new_group_free_runs` รอบ
-
-## Algorithm สรุป
-1. **plan**: เลือกกลุ่มที่ถึงรอบตาม tier, แบ่ง `run_post_budget` ตามน้ำหนัก (A3/B2/C1), ส่ง `stop_at_post_ids` + `cutoff`
-2. **อ่าน**: เปิด `feed_url` (เรียงใหม่สุด) เลื่อนลงจนเจอเงื่อนไขหยุดอย่างใดอย่างหนึ่ง:
-   เจอโพสต์ใน stop_at_post_ids ติดกัน `stop_after_consecutive_seen` โพสต์ (กันโพสต์ปักหมุด) /
-   โพสต์เก่ากว่า cutoff / ครบ max_posts / ฟีดหมด
-3. **ingest**: กันซ้ำด้วย post_id, อัปเดตสถิติกลุ่ม, ถ้าโพสต์เดิมกลายเป็น "ขายแล้ว" บันทึก sold_at,
-   คัดผล (fit ≥ min_fit, อายุ, ราคา, ยังไม่เคยส่งให้สินค้านี้) → เรียง fit มาก→ราคาน้อย
-4. **report**: ต่อ item ในช่วง N วัน → score = buy×3 + sold×2 + sell×0.5 + avg_comments×0.2,
-   demand_ratio = buy/(sell+1), median price, price trend (ครึ่งหลังเทียบครึ่งแรก), ชั่วโมงเฉลี่ยจนขายออก
-
-## PLAYBOOK สำหรับ Claude (ทำตามทุกรอบ)
-1. stage ทั้งโฟลเดอร์ fb (config/groups/wanted/market/state/scripts) เข้า workspace
-2. `python3 -I scripts/fbscan.py --root <fb> plan` → ได้ run_id และ due_groups
-3. เปิดเบราว์เซอร์ในแอป ต่อกลุ่มใน due_groups: ไป feed_url, อ่านด้วย get_page_text/read_page ก่อน (ไม่แคปจอถ้าไม่จำเป็น)
-   - ทำแค่อ่าน: ห้ามกดไลก์ คอมเมนต์ ทักแชท หรือ join กลุ่ม
-   - เปิดดูรูปเฉพาะโพสต์ที่ผ่านเงื่อนไขข้อความแล้ว ไม่เกิน `max_images_per_post`
-4. เขียน `runs/<run_id>/posts.jsonl` ทุกโพสต์ที่อ่าน (รวมโพสต์ซื้อ/ขายแล้ว เพื่อข้อมูลตลาด):
+## PLAYBOOK สำหรับ Claude ("รัน fb")
+1. stage `data/` (ยกเว้น images ถ้าไม่จำเป็น) + `scripts/fbscan.py` เข้า workspace
+2. `python3 -I scripts/fbscan.py --root <data> plan` → run_id, due_groups, stop_at_post_ids, cutoff
+3. เบราว์เซอร์ในแอป: ต่อกลุ่มเปิด `feed_url` อ่านด้วย get_page_text ก่อน แคปจอเมื่อจำเป็น
+   ทำแค่อ่าน ห้ามไลก์ คอมเมนต์ ทักแชท หรือ join กลุ่ม · เปิดรูปตาม `view_images` / `max_images_per_post`
+   หยุดเมื่อ: เจอ stop_at_post_ids ติดกัน `stop_after_consecutive_seen` โพสต์ / เก่ากว่า cutoff / ครบ max_posts / ฟีดหมด
+4. เขียน `runs/<run_id>/posts.jsonl` ทุกโพสต์ที่อ่าน (1 บรรทัด 1 โพสต์):
    ```json
    {"post_id":"<จาก URL>","group":"rov1","url":"https://www.facebook.com/groups/.../posts/<id>",
     "author":"ชื่อ","author_url":"...","posted_at":"2026-11-16T10:00:00+07:00","posted_at_raw":"3 ชม.",
     "kind":"sell|buy|sold|other","game":"ROV","items":["rov:conqueror-id"],
-    "price":1800,"comments":4,"reactions":12,"text":"ข้อความย่อ ≤300 ตัวอักษร","images_viewed":0,
-    "matches":[{"product":"example-rov","fit":85,"has":[],"missing":[],"nice_found":[],"flags":[],"note":""}]}
+    "attrs":["สกิน SS","เปลี่ยนอีเมลได้"],
+    "price":1800,"comments":4,"reactions":12,"text":"ข้อความย่อ ≤300 ตัวอักษร",
+    "matches":[{"product":"rov-conq","fit":85,"has":[],"missing":[],"nice_found":[],"flags":[],"note":""}]}
    ```
-   - price: ตัวเลขบาท หรือ null ถ้าไม่ระบุ / หลายราคาให้ใช้ราคาของชิ้นที่ match
-   - fit: 0-100 (must ครบ = ฐาน 70, +nice, -ถ้าข้อมูลไม่ชัด); เจอ exclude = ไม่ใส่ match
-   - items: ใช้ key จาก market.json ถ้าตรง ไม่งั้นตั้งใหม่ `game:slug` (ถ้า discover=true)
-   - meta.json (ไม่บังคับ): `{"rov1":"seen","rov2":"age"}` เหตุผลที่หยุด
-5. `python3 -I scripts/fbscan.py --root <fb> ingest runs/<run_id>/posts.jsonl --meta runs/<run_id>/meta.json`
-6. (ถ้าขอ หรือทุกรอบที่ข้อมูล ≥ 2 วัน) `python3 -I scripts/fbscan.py --root <fb> report`
-7. commit กลับ: state/*, data/market_log.jsonl, runs/<run_id>/*, results/*
-8. สรุปให้ผู้ใช้: จำนวนผลใหม่ต่อสินค้า + ลิงก์อันดับต้น ๆ + ธงเตือนที่สำคัญ
+   - `game`: ชื่อเดียวกับใน groups/wanted (dashboard แยกเกมด้วยค่านี้)
+   - `items`: key จาก market.json ถ้าตรง ไม่งั้นตั้งใหม่ `game:slug` (เมื่อ discover=true)
+   - `attrs`: จุดเด่นสั้น ๆ ที่เป็นมาตรฐาน (ใช้คำเดิมซ้ำทุกรอบ) — ใช้ในหัวข้อ "จุดเด่นที่ขายออก"
+   - `kind:"sold"` เมื่อเห็นโพสต์เดิมขึ้นว่าขายแล้ว → สคริปต์บันทึก sold_at
+   - `fit` 0-100 (must ครบ = ฐาน 70, +nice, -ข้อมูลไม่ชัด) · เจอ exclude = ไม่ใส่ match
+5. `python3 -I scripts/fbscan.py --root <data> ingest runs/<run_id>/posts.jsonl [--meta runs/<run_id>/meta.json]`
+6. commit กลับ: `state/*`, `log/market_log.jsonl`, `runs/<run_id>/*`, `results/*`
+7. สรุปให้ผู้ใช้: ผลใหม่ต่อสินค้า + ลิงก์อันดับต้น ๆ + ธงเตือน
+
+## สูตร
+- tier กลุ่ม: hit = (matches+1)/(posts_read+20) → A ทุกรอบ / B ทุก 48 ชม. / C ทุก 72 ชม. (แก้ได้ในตั้งค่า)
+- คะแนนสินค้า = ตามหา×3 + ขายออก×2 + โพสต์ขาย×0.5 · ความต้องการ/ของ = ตามหา ÷ (ขาย+1)
+- แนวโน้มราคา = มัธยฐานครึ่งหลังของช่วง เทียบครึ่งแรก
