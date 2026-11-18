@@ -1,1 +1,107 @@
-{"discover": true, "track": []}
+{
+  "discover": true,
+  "track": [
+    {
+      "key": "aa:limit-break-set",
+      "game": "Anime Adventures",
+      "name": "เซ็ตปลดลิมิต",
+      "aliases": []
+    },
+    {
+      "key": "aa:darkmage-noevo",
+      "game": "Anime Adventures",
+      "name": "Dark Mage ไม่อีโว",
+      "aliases": []
+    },
+    {
+      "key": "aa:judas",
+      "game": "Anime Adventures",
+      "name": "Judas",
+      "aliases": []
+    },
+    {
+      "key": "aa:buddha",
+      "game": "Anime Adventures",
+      "name": "พระ (Buddha)",
+      "aliases": []
+    },
+    {
+      "key": "aa:aizen",
+      "game": "Anime Adventures",
+      "name": "Aizen",
+      "aliases": []
+    },
+    {
+      "key": "aa:homura",
+      "game": "Anime Adventures",
+      "name": "Homura",
+      "aliases": []
+    },
+    {
+      "key": "aa:rika",
+      "game": "Anime Adventures",
+      "name": "Rika",
+      "aliases": []
+    },
+    {
+      "key": "aa:deer",
+      "game": "Anime Adventures",
+      "name": "กวาง",
+      "aliases": []
+    },
+    {
+      "key": "aa:gilgamesh",
+      "game": "Anime Adventures",
+      "name": "Gilgamesh",
+      "aliases": []
+    },
+    {
+      "key": "aa:megumin",
+      "game": "Anime Adventures",
+      "name": "Megumin",
+      "aliases": []
+    },
+    {
+      "key": "aa:elyssia",
+      "game": "Anime Adventures",
+      "name": "Elyssia",
+      "aliases": []
+    },
+    {
+      "key": "aa:starter-id",
+      "game": "Anime Adventures",
+      "name": "ไอดีไก่เพชร",
+      "aliases": []
+    },
+    {
+      "key": "aa:unique-id",
+      "game": "Anime Adventures",
+      "name": "ไอดียูนีค",
+      "aliases": []
+    },
+    {
+      "key": "aa:dazai",
+      "game": "Anime Adventures",
+      "name": "Dazai",
+      "aliases": []
+    },
+    {
+      "key": "aa:shisui",
+      "game": "Anime Adventures",
+      "name": "Shisui",
+      "aliases": []
+    },
+    {
+      "key": "aa:thorfinn",
+      "game": "Anime Adventures",
+      "name": "Thorfinn",
+      "aliases": []
+    },
+    {
+      "key": "aa:hidan",
+      "game": "Anime Adventures",
+      "name": "Hidan",
+      "aliases": []
+    }
+  ]
+}

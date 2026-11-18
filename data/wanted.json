@@ -1,1 +1,262 @@
-[]
+[
+  {
+    "id": "limit-break-set",
+    "enabled": true,
+    "game": "Anime Adventures",
+    "name": "เซ็ตปลดลิมิต",
+    "keywords": [
+      "เซ็ตปลดลิมิต",
+      "ปลดลิมิต",
+      "ปลด limit",
+      "limit break",
+      "limitbreak",
+      "ลิมิตเบรก",
+      "ตัวลิมิต"
+    ],
+    "must": [],
+    "nice": [],
+    "exclude": [
+      "รับซื้อ",
+      "หาซื้อ",
+      "ตามหา"
+    ],
+    "transfer": [
+      "ผ่านกลางได้"
+    ],
+    "price": {
+      "min": null,
+      "max": 45,
+      "market": 45
+    },
+    "max_post_age_days": 2,
+    "groups": "all",
+    "notes": "ขายต่อเซ็ตละ 45 · ซื้อไม่เกิน 35 · ราคาสูงสุดตั้งกว้างไว้เพื่อหาเผื่อ ต่อรองเอง"
+  },
+  {
+    "id": "darkmage-noevo",
+    "enabled": true,
+    "game": "Anime Adventures",
+    "name": "Dark Mage ไม่อีโว",
+    "keywords": [
+      "dark mage",
+      "darkmage",
+      "ดาร์คเมจ",
+      "ดาคเมจ",
+      "ดากเมด",
+      "ดาร์กเมจ",
+      "ดาร์คเมด"
+    ],
+    "must": [
+      "ไม่อีโว"
+    ],
+    "nice": [],
+    "exclude": [
+      "รับซื้อ",
+      "หาซื้อ",
+      "ตามหา"
+    ],
+    "transfer": [
+      "ผ่านกลางได้"
+    ],
+    "price": {
+      "min": null,
+      "max": 100,
+      "market": 20
+    },
+    "max_post_age_days": 2,
+    "groups": "all",
+    "notes": "ตัววัตถุดิบ ซื้อยกล็อต · ราคาสูงสุดตั้งกว้างไว้เพื่อหาเผื่อ ต่อรองเอง"
+  },
+  {
+    "id": "judas-buddha-noevo",
+    "enabled": true,
+    "game": "Anime Adventures",
+    "name": "Judas / พระ ไม่อีโว",
+    "keywords": [
+      "จูดาส",
+      "จูดราส",
+      "judas",
+      "พระ",
+      "buddha",
+      "บุดด้า"
+    ],
+    "must": [
+      "ไม่อีโว"
+    ],
+    "nice": [],
+    "exclude": [
+      "รับซื้อ",
+      "หาซื้อ",
+      "ตามหา"
+    ],
+    "transfer": [
+      "ผ่านกลางได้"
+    ],
+    "price": {
+      "min": null,
+      "max": 100,
+      "market": 20
+    },
+    "max_post_age_days": 2,
+    "groups": "all",
+    "notes": "ตัววัตถุดิบ ซื้อยกล็อต · ราคาสูงสุดตั้งกว้างไว้เพื่อหาเผื่อ ต่อรองเอง"
+  },
+  {
+    "id": "aizen",
+    "enabled": true,
+    "game": "Anime Adventures",
+    "name": "Aizen (ไอเซน)",
+    "keywords": [
+      "aizen",
+      "ไอเซน",
+      "ไอเซ็น",
+      "ไอเซ้น"
+    ],
+    "must": [],
+    "nice": [],
+    "exclude": [
+      "รับซื้อ",
+      "หาซื้อ",
+      "ตามหา",
+      "รหัส"
+    ],
+    "transfer": [
+      "ผ่านกลางได้"
+    ],
+    "price": {
+      "min": null,
+      "max": 1400,
+      "market": 1150
+    },
+    "max_post_age_days": 2,
+    "groups": "all",
+    "notes": "ตัวเทรด ไม่ใช่ไอดี · ราคาสูงสุดตั้งกว้างไว้เพื่อหาเผื่อ ต่อรองเอง"
+  },
+  {
+    "id": "homura",
+    "enabled": true,
+    "game": "Anime Adventures",
+    "name": "Homura (โฮมุระ)",
+    "keywords": [
+      "homura",
+      "โฮมุระ",
+      "homaru"
+    ],
+    "must": [],
+    "nice": [],
+    "exclude": [
+      "รับซื้อ",
+      "หาซื้อ",
+      "ตามหา",
+      "รหัส"
+    ],
+    "transfer": [
+      "ผ่านกลางได้"
+    ],
+    "price": {
+      "min": null,
+      "max": 600,
+      "market": 550
+    },
+    "max_post_age_days": 2,
+    "groups": "all",
+    "notes": "ตัวเทรด ไม่ใช่ไอดี · ราคาสูงสุดตั้งกว้างไว้เพื่อหาเผื่อ ต่อรองเอง"
+  },
+  {
+    "id": "shiny-rika",
+    "enabled": true,
+    "game": "Anime Adventures",
+    "name": "Shiny Rika (ริกะ)",
+    "keywords": [
+      "ริกะ",
+      "ริกกะ",
+      "rika"
+    ],
+    "must": [
+      "shiny / ไชนี่"
+    ],
+    "nice": [],
+    "exclude": [
+      "รับซื้อ",
+      "หาซื้อ",
+      "ตามหา"
+    ],
+    "transfer": [
+      "ผ่านกลางได้"
+    ],
+    "price": {
+      "min": null,
+      "max": 320,
+      "market": 300
+    },
+    "max_post_age_days": 2,
+    "groups": "all",
+    "notes": "ต้องเป็น Shiny · ราคาสูงสุดตั้งกว้างไว้เพื่อหาเผื่อ ต่อรองเอง"
+  },
+  {
+    "id": "shiny-deer",
+    "enabled": true,
+    "game": "Anime Adventures",
+    "name": "กวาง Shiny",
+    "keywords": [
+      "กวาง",
+      "deer"
+    ],
+    "must": [
+      "shiny / ไชนี่"
+    ],
+    "nice": [],
+    "exclude": [
+      "รับซื้อ",
+      "หาซื้อ",
+      "ตามหา"
+    ],
+    "transfer": [
+      "ผ่านกลางได้"
+    ],
+    "price": {
+      "min": null,
+      "max": 100,
+      "market": 100
+    },
+    "max_post_age_days": 2,
+    "groups": "all",
+    "notes": "ต้องเป็น Shiny · ราคาสูงสุดตั้งกว้างไว้เพื่อหาเผื่อ ต่อรองเอง"
+  },
+  {
+    "id": "rare-shiny",
+    "enabled": true,
+    "game": "Anime Adventures",
+    "name": "Shiny หายาก (Dazai / Shisui / Thorfinn / Hidan)",
+    "keywords": [
+      "dazai",
+      "ดาไซ",
+      "shisui",
+      "ชิซุย",
+      "thorfinn",
+      "ทอร์ฟินน์",
+      "hidan",
+      "ฮิดัน"
+    ],
+    "must": [
+      "shiny / ไชนี่"
+    ],
+    "nice": [],
+    "exclude": [
+      "รับซื้อ",
+      "หาซื้อ",
+      "ตามหา"
+    ],
+    "transfer": [
+      "ผ่านกลางได้"
+    ],
+    "price": {
+      "min": null,
+      "max": null,
+      "market": null
+    },
+    "max_post_age_days": 2,
+    "groups": "all",
+    "notes": "ยังไม่รู้ราคาตลาด เก็บทุกโพสต์ไว้ดูราคา · ราคาสูงสุดตั้งกว้างไว้เพื่อหาเผื่อ ต่อรองเอง"
+  }
+]

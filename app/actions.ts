@@ -48,7 +48,7 @@ export async function saveWantedAction(list: Wanted[]): Promise<SaveResult> {
   if (err) return { ok: false, error: err };
   const bad = clean.find((w) => !w.name || !w.game);
   if (bad) return { ok: false, error: `สินค้า "${bad.id}" ต้องมีชื่อและเกม` };
-  saveWanted(clean);
+  await saveWanted(clean);
   revalidatePath("/", "layout");
   return { ok: true };
 }
@@ -65,7 +65,7 @@ export async function saveGroupsAction(list: Group[]): Promise<SaveResult> {
   if (err) return { ok: false, error: err };
   const bad = clean.find((g) => !/^https:\/\/(www\.|m\.)?facebook\.com\/groups\/[^/\s]+/.test(g.url));
   if (bad) return { ok: false, error: `ลิงก์กลุ่ม "${bad.id}" ต้องเป็น https://www.facebook.com/groups/...` };
-  saveGroups(clean);
+  await saveGroups(clean);
   revalidatePath("/", "layout");
   return { ok: true };
 }
@@ -83,7 +83,7 @@ export async function saveMarketAction(m: Market): Promise<SaveResult> {
     if (keys.has(t.key)) return { ok: false, error: `key "${t.key}" ซ้ำกัน` };
     keys.add(t.key);
   }
-  saveMarket({ discover: !!m.discover, track });
+  await saveMarket({ discover: !!m.discover, track });
   revalidatePath("/", "layout");
   return { ok: true };
 }
@@ -116,7 +116,7 @@ export async function saveConfigAction(c: Config): Promise<SaveResult> {
   };
   if (clean.per_group_min_posts > clean.per_group_max_posts)
     return { ok: false, error: "โพสต์ขั้นต่ำต่อกลุ่ม ต้องไม่มากกว่าขั้นสูงสุด" };
-  saveConfig(clean);
+  await saveConfig(clean);
   revalidatePath("/", "layout");
   return { ok: true };
 }
@@ -126,17 +126,21 @@ export async function uploadImagesAction(productId: string, form: FormData): Pro
   const files = form.getAll("files").filter((f): f is File => f instanceof File && f.size > 0);
   for (const f of files) {
     if (!/^image\/(png|jpeg|webp|gif)$/.test(f.type)) return { ok: false, error: `${f.name}: รองรับแค่ png/jpg/webp/gif` };
-    if (f.size > 8 * 1024 * 1024) return { ok: false, error: `${f.name}: ใหญ่เกิน 8MB` };
+    if (f.size > 3 * 1024 * 1024) return { ok: false, error: `${f.name}: ใหญ่เกิน 3MB` };
     const ext = f.type === "image/jpeg" ? "jpg" : f.type.split("/")[1];
     const base = f.name.replace(/\.[^.]+$/, "").replace(/[^A-Za-z0-9_-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40) || "img";
-    saveImage(productId, `${base}-${Date.now().toString(36)}.${ext}`, Buffer.from(await f.arrayBuffer()));
+    try {
+      await saveImage(productId, `${base}-${Date.now().toString(36)}.${ext}`, f.type, Buffer.from(await f.arrayBuffer()));
+    } catch {
+      return { ok: false, error: "บันทึกสินค้าก่อนอัปโหลดรูป" };
+    }
   }
   revalidatePath("/wanted");
   return { ok: true };
 }
 
 export async function deleteImageAction(productId: string, file: string): Promise<SaveResult> {
-  deleteImage(productId, file);
+  await deleteImage(productId, file);
   revalidatePath("/wanted");
   return { ok: true };
 }

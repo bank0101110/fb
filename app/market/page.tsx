@@ -5,12 +5,12 @@ import { getLog, getMarket } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
 
-export default function MarketPage() {
-  const market = getMarket();
+export default async function MarketPage() {
+  const [market, log] = await Promise.all([getMarket(), getLog()]);
   return (
     <>
-      <PageHeader title="รายการติดตามความนิยม" sub="ของที่ให้นับในรายงาน · เก็บใน data/market.json" />
-      <MarketEditor initial={market} discovered={discoveredItems(getLog(), market)} />
+      <PageHeader title="รายการติดตามความนิยม" sub="ของที่ให้นับในรายงาน · เก็บในฐานข้อมูล" />
+      <MarketEditor initial={market} discovered={discoveredItems(log, market)} />
     </>
   );
 }

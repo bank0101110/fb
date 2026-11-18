@@ -16,7 +16,7 @@ const LINKS: { href: string; label: string; icon: IconName }[] = [
 export function Nav() {
   const path = usePathname();
   return (
-    <nav aria-label="เมนูหลัก" className="flex flex-col gap-1">
+    <nav aria-label="เมนูหลัก" className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1 md:mx-0 md:flex-col md:overflow-visible md:px-0 md:pb-0">
       {LINKS.map((l) => {
         const active = l.href === "/" ? path === "/" : path.startsWith(l.href);
         return (
@@ -25,7 +25,7 @@ export function Nav() {
             href={l.href}
             aria-current={active ? "page" : undefined}
             className={
-              "flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm " +
+              "flex min-h-11 shrink-0 items-center gap-2 whitespace-nowrap rounded-xl px-3 text-sm md:gap-3 " +
               (active ? "bg-primary font-semibold text-white" : "text-soft hover:bg-elevated")
             }
           >

@@ -71,7 +71,7 @@ export function SaveBar({ dirty, onSave }: { dirty: boolean; onSave: () => Promi
   return (
     <div className="card sticky bottom-4 z-10 flex flex-wrap items-center justify-between gap-3 px-5 py-3">
       <span role="status" className={"text-sm " + (msg && !msg.ok ? "text-danger-text" : dirty ? "text-warn" : "text-muted")}>
-        {msg && !msg.ok ? msg.text : dirty ? "มีการแก้ไขที่ยังไม่บันทึก" : "บันทึกแล้ว · ไฟล์อยู่ในโฟลเดอร์ data/"}
+        {msg && !msg.ok ? msg.text : dirty ? "มีการแก้ไขที่ยังไม่บันทึก" : "บันทึกแล้ว"}
       </span>
       <button
         type="button"

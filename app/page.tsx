@@ -13,11 +13,11 @@ export default async function Dashboard({ searchParams }: { searchParams: SP }) 
   const sp = await searchParams;
   const days = one(sp.days) === "7" ? 7 : 14;
   const sort = (["score", "sold", "fast"].includes(one(sp.sort) ?? "") ? one(sp.sort) : "score") as Sort;
-  const log = getLog();
-  const groups = getGroups();
-  const cfg = getConfig();
+  const [log, groups, cfg, seen, market, wantedList, matchRuns, gState] = await Promise.all([
+    getLog(), getGroups(), getConfig(), getSeen(), getMarket(), getWanted(), getMatchRuns(), getGroupState(),
+  ]);
   const d = dashboard({
-    log, seen: getSeen(), market: getMarket(), groups,
+    log, seen, market, groups,
     game: one(sp.game) ?? "", days, sort, item: one(sp.item),
   });
   const href = (patch: Record<string, string | undefined>) => {
@@ -27,12 +27,12 @@ export default async function Dashboard({ searchParams }: { searchParams: SP }) 
     return `/?${q.toString()}#${patch.item ? "detail" : "top"}`;
   };
 
-  const wantedGames = new Map(getWanted().map((w) => [w.id, w.game]));
-  const matches = getMatchRuns()
+  const wantedGames = new Map(wantedList.map((w) => [w.id, w.game]));
+  const matches = matchRuns
     .flatMap((r) => r.rows)
     .filter((m) => !d.game || wantedGames.get(m.product) === d.game)
     .slice(0, 4);
-  const gRows = groupRows(groups, getGroupState(), cfg).filter((g) => !d.game || g.games.length === 0 || g.games.includes(d.game));
+  const gRows = groupRows(groups, gState, cfg).filter((g) => !d.game || g.games.length === 0 || g.games.includes(d.game));
   const dayLabels = d.buyD.map((_, i) => thDate(Date.now() - (d.days - 1 - i) * 86_400_000));
 
   return (
@@ -213,7 +213,7 @@ export default async function Dashboard({ searchParams }: { searchParams: SP }) 
 
           <section className="card flex flex-col gap-2 p-6">
             <h2 className="mb-1 text-[17px] font-semibold">กลุ่มที่อ่าน</h2>
-            {gRows.map((g) => (
+            {gRows.slice(0, 6).map((g) => (
               <div key={g.id} className="flex items-center gap-3 border-b border-elevated py-2.5">
                 <span className="grid size-[34px] place-items-center rounded-[10px] bg-primary-deep text-sm font-bold text-primary-pale">{g.tier}</span>
                 <div className="flex min-w-0 flex-1 flex-col">
@@ -224,6 +224,7 @@ export default async function Dashboard({ searchParams }: { searchParams: SP }) 
               </div>
             ))}
             {gRows.length === 0 && <Link href="/groups" className="text-sm text-primary-light">เพิ่มกลุ่ม Facebook</Link>}
+            {gRows.length > 6 && <Link href="/groups" className="pt-1 text-[13px] text-primary-light no-underline">ดูทั้งหมด {gRows.length} กลุ่ม</Link>}
           </section>
         </div>
       </div>

@@ -196,7 +196,7 @@ def cmd_ingest(ctx, args):
             age = w.get("max_post_age_days") or cfg["max_post_age_days"]
             if pt and pt < t - timedelta(days=age):
                 continue
-            price = p.get("price")
+            price = m["price"] if "price" in m else p.get("price")  # per-match price overrides the post's
             pr = w.get("price", {})
             if price is None:
                 if not cfg["include_no_price"]:
@@ -219,12 +219,13 @@ def cmd_ingest(ctx, args):
     # results
     rows = []
     for prod, lst in cand.items():
+        mp = lambda m, p: m["price"] if "price" in m else p.get("price")
         lst.sort(key=lambda x: (-x[0].get("fit", 0),
-                                x[1].get("price") if x[1].get("price") is not None else 1e12))
+                                mp(x[0], x[1]) if mp(x[0], x[1]) is not None else 1e12))
         for rank, (m, p, pid, vs, flags) in enumerate(lst[:max_res], 1):
             ctx.seen[pid]["reported"].append(prod)
             rows.append([prod, rank, m.get("fit"), p.get("url"), p["group"], p.get("author"),
-                         p.get("author_url"), p.get("price"), vs, p.get("posted_at"),
+                         p.get("author_url"), m["price"] if "price" in m else p.get("price"), vs, p.get("posted_at"),
                          " | ".join(m.get("has", [])), " | ".join(m.get("missing", [])),
                          " | ".join(m.get("nice_found", [])), " | ".join(flags),
                          m.get("note", "")])

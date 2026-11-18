@@ -11,9 +11,9 @@ type SP = Promise<Record<string, string | string[] | undefined>>;
 export default async function ResultsPage({ searchParams }: { searchParams: SP }) {
   const sp = await searchParams;
   const product = typeof sp.product === "string" ? sp.product : "";
-  const wanted = getWanted();
+  const [wanted, allRuns] = await Promise.all([getWanted(), getMatchRuns(50)]);
   const names = new Map(wanted.map((w) => [w.id, w.name]));
-  const runs = getMatchRuns()
+  const runs = allRuns
     .map((r) => ({ ...r, rows: r.rows.filter((m) => !product || m.product === product) }))
     .filter((r) => r.rows.length);
 

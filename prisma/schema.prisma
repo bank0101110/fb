@@ -1,0 +1,133 @@
+// Supabase Postgres via Prisma 7 (driver adapter, no query engine binary).
+// Connection strings live in prisma.config.ts (CLI) and lib/db.ts (runtime).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// Singleton (id = 1): the whole config.json as JSON.
+model Setting {
+  id        Int      @id @default(1)
+  config    Json
+  discover  Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+}
+
+model Group {
+  id       String   @id
+  url      String
+  games    String[]
+  mode     String   @default("feed")
+  enabled  Boolean  @default(true)
+  position Int      @default(0)
+}
+
+model Wanted {
+  id             String   @id
+  enabled        Boolean  @default(true)
+  game           String
+  name           String
+  keywords       String[]
+  must           String[]
+  nice           String[]
+  exclude        String[]
+  transfer       String[]
+  priceMin       Float?
+  priceMax       Float?
+  priceMarket    Float?
+  maxPostAgeDays Int?
+  /// "all" or a JSON array of group ids
+  groups         Json
+  notes          String   @default("")
+  position       Int      @default(0)
+  images         Image[]
+}
+
+model TrackItem {
+  key      String   @id
+  game     String
+  name     String
+  aliases  String[]
+  position Int      @default(0)
+}
+
+model GroupState {
+  groupId        String    @id
+  runs           Int       @default(0)
+  postsRead      Int       @default(0)
+  matches        Int       @default(0)
+  recentPostIds  String[]
+  lastReadAt     DateTime?
+  newestPostAt   DateTime?
+  postsPerDay    Float?
+  lastStopReason String?
+}
+
+/// Every post ever read (market log + seen state in one row).
+model Post {
+  postId      String    @id
+  group       String
+  url         String?
+  author      String?
+  authorUrl   String?
+  postedAt    DateTime?
+  postedAtRaw String?
+  kind        String?
+  game        String?
+  items       String[]
+  attrs       String[]
+  price       Float?
+  comments    Int?
+  reactions   Int?
+  text        String?
+  matches     Json?
+  runId       String?
+  firstSeen   DateTime  @default(now())
+  soldAt      DateTime?
+  /// product ids this post has already been reported for
+  reported    String[]
+
+  @@index([game, postedAt])
+  @@index([group])
+}
+
+model MatchResult {
+  id          Int       @id @default(autoincrement())
+  runId       String
+  product     String
+  rank        Int
+  fit         Int
+  postUrl     String
+  group       String
+  author      String?
+  authorUrl   String?
+  price       Float?
+  cheaperPct  Int?
+  postedAt    DateTime?
+  has         String[]
+  missing     String[]
+  niceFound   String[]
+  flags       String[]
+  note        String    @default("")
+  createdAt   DateTime  @default(now())
+
+  @@index([runId])
+  @@index([product])
+}
+
+model Image {
+  id        Int      @id @default(autoincrement())
+  productId String
+  fileName  String
+  mime      String
+  data      Bytes
+  createdAt DateTime @default(now())
+  product   Wanted   @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([productId, fileName])
+}
